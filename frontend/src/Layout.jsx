@@ -34,15 +34,19 @@ const Layout = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
     return (
-        <div className="flex w-full min-h-screen overflow-x-hidden">
-            <div className={`h-screen ${isSidebarOpen ? "w-72 flex-shrink-0" : "w-0"} transition-all duration-500 ease-in-out bg-white`}>
-                {isSidebarOpen && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />}
+        <div className="flex flex-col min-h-screen overflow-x-hidden">
+            <div className="flex flex-1 w-full">
+                <div className={`h-screen sticky top-0 ${isSidebarOpen ? "w-72 flex-shrink-0" : "w-0"} transition-all duration-500 ease-in-out bg-white z-40`}>
+                    {isSidebarOpen && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />}
+                </div>
+                <div className="flex flex-col w-full min-w-0">
+                    <Navbar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+                    <div className="flex-1">
+                        <App />
+                    </div>
+                </div>
             </div>
-            <div className="w-full">
-                <Navbar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-                <App />
-                <Footer />
-            </div>
+            <Footer />
         </div>
     );
 };

@@ -11,7 +11,9 @@ import {
   UserPlus,
   RefreshCw,
   Loader,
-  Trash2
+  Trash2,
+  ArrowRight,
+  ShieldAlert
 } from "lucide-react";
 import Toast from "../Message/Toast";
 import { ConfirmModal } from "../Message/ConfirmModal";
@@ -131,17 +133,17 @@ const GroupBill = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader className="w-12 h-12 animate-spin text-purple-600 mx-auto" />
-          <p className="mt-4 text-lg text-purple-700">Loading Split Expense Manager...</p>
+          <Loader className="w-10 h-10 animate-spin text-indigo-600 mx-auto" />
+          <p className="mt-4 text-gray-600 font-medium">Loading Split Expenses...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-200 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 pb-12">
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         message={confirmModal.message}
@@ -158,168 +160,174 @@ const GroupBill = () => {
           />
         ))}
       </div>
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-600 to-purple-800 p-6 md:p-8 text-white">
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Split Expense Manager</h1>
-          <p className="mt-2 text-purple-100">Create and manage shared expenses with friends and family</p>
-        </div>
 
-        <div className="p-4 md:p-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 md:mb-8">
-            <div className="flex flex-col sm:flex-row gap-3 w-full">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-20 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center">
+              <Users className="w-6 h-6 mr-2 text-indigo-600" />
+              Split Expenses
+            </h1>
+            <div className="flex items-center space-x-3">
               <button
-                onClick={() => setIsModalOpen(true)}
-                className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-sm"
+                onClick={fetchGroups}
+                className="p-2 text-gray-500 hover:text-indigo-600 transition-colors rounded-full hover:bg-indigo-50"
+                title="Refresh Groups"
               >
-                <Plus className="w-5 h-5" />
-                <span>Create Group</span>
-              </button>
-              <button
-                onClick={() => setIsJoinModalOpen(true)}
-                className="flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-sm mt-3 sm:mt-0"
-              >
-                <UserPlus className="w-5 h-5" />
-                <span>Join Group</span>
+                <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
               </button>
             </div>
-
-            <button
-              onClick={fetchGroups}
-              className="flex items-center justify-center gap-2 text-purple-600 hover:text-purple-800 font-medium py-2 px-4 rounded-lg transition-all duration-200"
-            >
-              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-              <span>Refresh</span>
-            </button>
-          </div>
-
-          <div className="bg-purple-50 rounded-xl p-4 md:p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg md:text-xl font-semibold text-purple-800 flex items-center gap-2">
-                <Users className="w-5 h-5 text-purple-600" />
-                <span>Your Groups</span>
-              </h2>
-              {groups.length > 0 && (
-                <div className="text-sm text-purple-500 font-medium">
-                  {groups.length} {groups.length === 1 ? 'group' : 'groups'}
-                </div>
-              )}
-            </div>
-
-            {isLoading ? (
-              <div className="py-8 flex justify-center">
-                <div className="animate-pulse flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-full bg-purple-200 mb-3"></div>
-                  <div className="h-4 w-24 bg-purple-200 rounded"></div>
-                </div>
-              </div>
-            ) : groups.length === 0 ? (
-              <div className="py-10 text-center">
-                <div className="inline-flex items-center justify-center p-4 rounded-full bg-purple-100 mb-4">
-                  <Users className="w-8 h-8 text-purple-400" />
-                </div>
-                <p className="text-purple-500 font-medium">No groups found.</p>
-                <p className="text-purple-400 text-sm mt-1">Create or join a group to get started!</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {groups.map((group) => (
-                  <div
-                    key={group._id}
-                    className="bg-white rounded-lg border border-purple-100 p-4 md:p-5 flex flex-col sm:flex-row justify-between gap-4 hover:shadow-md transition-all duration-200"
-                  >
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                      <div className="bg-purple-100 p-3 rounded-lg">
-                        <Users className="w-5 h-5 text-purple-600" />
-                      </div>
-                      <div>
-                        <Link
-                          to={`/groups/${group._id}`}
-                          className="text-lg font-medium text-purple-800 hover:text-purple-600 transition-colors"
-                        >
-                          {group.name}
-                        </Link>
-                        <div className="flex flex-wrap items-center gap-2 mt-1">
-                          <span className="text-sm text-purple-500 font-mono bg-purple-50 py-1 px-2 rounded">
-                            {group.inviteCode}
-                          </span>
-                          <button
-                            onClick={() => copyInviteCode(group.inviteCode)}
-                            className="text-purple-400 hover:text-purple-600 transition-colors"
-                            title="Copy invite code"
-                          >
-                            {copiedCode === group.inviteCode ? (
-                              <Check className="w-4 h-4 text-green-500" />
-                            ) : (
-                              <Clipboard className="w-4 h-4" />
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2 justify-end">
-                      <button
-                        onClick={() => navigate(`/groups/${group._id}`)}
-                        className="bg-yellow-50 hover:bg-yellow-100 text-yellow-700 py-2 px-4 rounded-lg transition-colors font-medium flex items-center gap-2"
-                      >
-                        <span>View Bills</span>
-                      </button>
-                      <button 
-                        className="text-red-500 hover:text-red-700 transition-colors hover:cursor-pointer p-2" 
-                        onClick={() => deleteGroup(group._id)}
-                        aria-label="Delete group"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </div>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        {/* Action Bar */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Your Groups</h2>
+            <p className="text-gray-500 text-sm mt-1">Manage shared expenses with friends and family</p>
+          </div>
+          <div className="flex w-full sm:w-auto gap-3">
+            <button
+              onClick={() => setIsJoinModalOpen(true)}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-white border border-gray-200 hover:border-gray-300 text-gray-700 font-medium py-2.5 px-5 rounded-lg transition-all shadow-sm"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>Join Group</span>
+            </button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-5 rounded-lg transition-all shadow-sm"
+            >
+              <Plus className="w-4 h-4" />
+              <span>New Group</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Groups Grid */}
+        {groups.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center mt-8">
+            <div className="mx-auto w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mb-4">
+              <Users className="w-8 h-8 text-indigo-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">No groups yet</h2>
+            <p className="text-gray-500 mb-6 max-w-md mx-auto">Create a new group or join an existing one to start splitting bills and tracking shared expenses easily.</p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition-all"
+              >
+                Create Group
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {groups.map((group) => (
+              <div
+                key={group._id}
+                className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col h-full"
+              >
+                <div className="p-6 flex-1 flex flex-col">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="bg-indigo-50 p-3 rounded-lg">
+                      <Users className="w-6 h-6 text-indigo-600" />
+                    </div>
+                    <button 
+                      className="text-gray-400 hover:text-red-500 transition-colors hover:bg-red-50 p-2 rounded-full" 
+                      onClick={() => deleteGroup(group._id)}
+                      title="Delete group"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                  
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1">
+                    {group.name}
+                  </h3>
+                  
+                  <div className="mt-auto pt-4 border-t border-gray-50">
+                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-2">Invite Code</p>
+                    <div className="flex items-center gap-2">
+                      <code className="text-sm font-mono font-bold text-gray-700 bg-gray-100 py-1.5 px-3 rounded-md flex-1 text-center tracking-widest">
+                        {group.inviteCode}
+                      </code>
+                      <button
+                        onClick={() => copyInviteCode(group.inviteCode)}
+                        className="p-2 text-gray-500 hover:text-indigo-600 bg-gray-50 hover:bg-indigo-50 rounded-md transition-colors border border-gray-200"
+                        title="Copy code"
+                      >
+                        {copiedCode === group.inviteCode ? (
+                          <Check className="w-4 h-4 text-emerald-500" />
+                        ) : (
+                          <Clipboard className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-gray-50 border-t border-gray-100 rounded-b-xl flex justify-end">
+                  <Link
+                    to={`/groups/${group._id}`}
+                    className="text-indigo-600 hover:text-indigo-800 font-semibold text-sm flex items-center transition-colors"
+                  >
+                    View Expenses <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Create Group Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-purple-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl p-5 w-full max-w-md mx-auto animate-fadeIn">
-            <div className="flex justify-between items-center mb-5">
-              <h3 className="text-xl font-semibold text-purple-800">Create New Group</h3>
+        <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-auto overflow-hidden animate-fadeIn">
+            <div className="flex justify-between items-center p-6 border-b border-gray-100">
+              <h3 className="text-lg font-bold text-gray-900">Create New Group</h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-purple-400 hover:text-purple-600 transition-colors"
+                className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="mb-5">
-              <label htmlFor="groupName" className="block text-sm font-medium text-purple-700 mb-1">Group Name</label>
-              <input
-                id="groupName"
-                type="text"
-                placeholder="Enter group name"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                className="w-full p-3 border border-purple-200 rounded-lg bg-purple-50 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
-              />
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="flex-1 py-2.5 border border-purple-200 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={createGroup}
-                disabled={!groupName.trim()}
-                className={`flex-1 py-2.5 rounded-lg font-medium transition-colors ${groupName.trim()
-                  ? 'bg-purple-600 hover:bg-purple-700 text-white'
-                  : 'bg-purple-200 text-purple-400 cursor-not-allowed'
-                  }`}
-              >
-                Create
-              </button>
+            <div className="p-6">
+              <div className="mb-6">
+                <label htmlFor="groupName" className="block text-sm font-semibold text-gray-700 mb-2">Group Name</label>
+                <input
+                  id="groupName"
+                  type="text"
+                  placeholder="e.g. Goa Trip 2026, Roommates"
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                  autoFocus
+                />
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={createGroup}
+                  disabled={!groupName.trim()}
+                  className={`flex-1 py-2.5 rounded-lg font-medium transition-colors shadow-sm ${groupName.trim()
+                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
+                >
+                  Create Group
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -327,48 +335,51 @@ const GroupBill = () => {
 
       {/* Join Group Modal */}
       {isJoinModalOpen && (
-        <div className="fixed inset-0 bg-purple-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl p-5 w-full max-w-md mx-auto animate-fadeIn">
-            <div className="flex justify-between items-center mb-5">
-              <h3 className="text-xl font-semibold text-purple-800">Join a Group</h3>
+        <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-auto overflow-hidden animate-fadeIn">
+            <div className="flex justify-between items-center p-6 border-b border-gray-100">
+              <h3 className="text-lg font-bold text-gray-900">Join a Group</h3>
               <button
                 onClick={() => setIsJoinModalOpen(false)}
-                className="text-purple-400 hover:text-purple-600 transition-colors"
+                className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="mb-5">
-              <label htmlFor="inviteCode" className="block text-sm font-medium text-purple-700 mb-1">Invite Code</label>
-              <div className="relative">
-                <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400 w-4 h-4" />
-                <input
-                  id="inviteCode"
-                  type="text"
-                  placeholder="Enter invite code"
-                  value={inviteCode}
-                  onChange={(e) => setInviteCode(e.target.value)}
-                  className="w-full p-3 pl-10 border border-purple-200 rounded-lg bg-purple-50 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none transition-all"
-                />
+            <div className="p-6">
+              <div className="mb-6">
+                <label htmlFor="inviteCode" className="block text-sm font-semibold text-gray-700 mb-2">Invite Code</label>
+                <div className="relative">
+                  <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    id="inviteCode"
+                    type="text"
+                    placeholder="Enter 6-character code"
+                    value={inviteCode}
+                    onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                    className="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-mono tracking-widest uppercase"
+                    autoFocus
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setIsJoinModalOpen(false)}
-                className="flex-1 py-2.5 border border-purple-200 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={joinGroup}
-                disabled={!inviteCode.trim()}
-                className={`flex-1 py-2.5 rounded-lg font-medium transition-colors ${inviteCode.trim()
-                  ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
-                  : 'bg-yellow-200 text-yellow-400 cursor-not-allowed'
-                  }`}
-              >
-                Join
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setIsJoinModalOpen(false)}
+                  className="flex-1 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={joinGroup}
+                  disabled={!inviteCode.trim()}
+                  className={`flex-1 py-2.5 rounded-lg font-medium transition-colors shadow-sm ${inviteCode.trim()
+                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
+                >
+                  Join Group
+                </button>
+              </div>
             </div>
           </div>
         </div>

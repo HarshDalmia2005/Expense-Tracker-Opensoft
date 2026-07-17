@@ -26,41 +26,56 @@ export const AuthProvider = ({ children }) => {
     };
 
 
-    useEffect(() => {
-        const verifyToken = async () => {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                if (isAuthenticated) {
-                    setIsAuthenticated(false);
-                    navigate("/signin");
-                }
-                return;
-            }
+    const verifyToken = async () => {
+        const token = localStorage.getItem("token");
+        const isAuthPage = window.location.pathname === "/signin" || window.location.pathname === "/signup";
+        
+        if (!token) {
+            setIsAuthenticated(false);
+            if (!isAuthPage) navigate("/signin");
+            return;
+        }
 
-            try {
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/verify`, {
-                    method: "GET",
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/verify`, {
+                method: "GET",
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
-                const data = await response.json();
-                if (!data.authenticated) {
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("user");
-                    setIsAuthenticated(false);
-                    navigate("/signin");
-                } else {
-                    setIsAuthenticated(true);
-                    setUser(data.user);
-                }
-            } catch (error) {
-                console.error("Error verifying token:", error);
+            const data = await response.json();
+            if (!data.authenticated) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
                 setIsAuthenticated(false);
-                navigate("/signin");
+                if (!isAuthPage) navigate("/signin");
+            } else {
+                setIsAuthenticated(true);
+                setUser(data.user);
+            }
+        } catch (error) {
+            console.error("Error verifying token:", error);
+            setIsAuthenticated(false);
+            if (!isAuthPage) navigate("/signin");
+        }
+    };
+
+    useEffect(() => {
+        verifyToken();
+
+        // Check token validity when user switches back to this tab
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "visible") {
+                verifyToken();
             }
         };
 
-        verifyToken();
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        window.addEventListener("focus", verifyToken);
+
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            window.removeEventListener("focus", verifyToken);
+        };
     }, []);
 
     useEffect(() => {

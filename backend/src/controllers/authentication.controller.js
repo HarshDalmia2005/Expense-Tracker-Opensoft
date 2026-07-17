@@ -99,12 +99,20 @@ export const verify = (req, res) => {
 
   const token = authHeader.split(" ")[1];
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
       return res.status(401).json({ authenticated: false, message: "Invalid token" });
     }
 
-    return res.json({ authenticated: true, user: decoded });
+    try {
+      const user = await User.findById(decoded.id).select('-password');
+      if (!user) {
+         return res.status(401).json({ authenticated: false, message: "User no longer exists" });
+      }
+      return res.json({ authenticated: true, user });
+    } catch (dbError) {
+      return res.status(500).json({ authenticated: false, message: "Server error" });
+    }
   });
 };
 

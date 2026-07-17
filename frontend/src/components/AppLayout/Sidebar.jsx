@@ -76,7 +76,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   return (
     <div
       className={`h-screen bg-white border-r border-gray-300 transition-all duration-500
-      ${isSidebarOpen ? "w-79" : "w-0 overflow-hidden"} md:relative fixed z-50`}
+      ${isSidebarOpen ? "w-full" : "w-0 overflow-hidden"} md:relative fixed z-50`}
     >
       {/* Toggle Button */}
       <button

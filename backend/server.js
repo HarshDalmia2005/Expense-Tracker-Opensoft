@@ -8,6 +8,7 @@ import groupRouter from './src/routers/group.router.js'
 import billRouter from './src/routers/bills.router.js'
 import oauthRouter from './src/routers/oauth.router.js';
 import { connectDB } from "./src/db/index.js";
+import { seedAdmin } from "./src/db/seed.js";
 import dotenv from 'dotenv';
 import session from 'express-session';
 import os from 'os';
@@ -66,7 +67,8 @@ app.get('/health', async(req, res) => {
 });
 
 connectDB()
-    .then(() => {
+    .then(async () => {
+        await seedAdmin();
         app.listen(port, () => {
             console.log(`listening on ${port}`);
         })

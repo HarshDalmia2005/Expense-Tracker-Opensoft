@@ -134,10 +134,10 @@ const SignInPage = () => {
             <div className="space-y-4">
               {/* Social login buttons */}
               <div className="grid grid-cols-1 md:grid-cols-1 gap-3">
-                <button
-                  type="button"
-                  onClick={()=> window.open(`${import.meta.env.VITE_BACKEND_URL}/api/oauth/google`, "_self")}
-                  className="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200"
+                <button 
+                  type="button" 
+                  onClick={()=> window.open(`${import.meta.env.VITE_BACKEND_URL}/oauth/google`, "_self")}
+                  className="w-full flex items-center justify-center px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
                 >
                   <span className="flex items-center">
                     <img

@@ -7,13 +7,13 @@ import { logActivity } from "../controllers/activity.controller.js";
 const router = express.Router();
 
 router.get(
-  "/api/oauth/google",
+  "/oauth/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 
 router.get(
-  "/api/oauth/google/callback",
+  "/oauth/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   async(req, res) => {
     try {

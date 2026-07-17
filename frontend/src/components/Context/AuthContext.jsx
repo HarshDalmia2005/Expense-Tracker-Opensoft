@@ -183,7 +183,7 @@ export const AuthProvider = ({ children }) => {
         console.log("Google sign-in initiated");
         try {
             setLoading(true);
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/oauth/google`, { withCredentials: true });
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/oauth/google`, { withCredentials: true });
             const res=await response.json()
             if (res.status === 200) {
                 const { token, user } = res.data;

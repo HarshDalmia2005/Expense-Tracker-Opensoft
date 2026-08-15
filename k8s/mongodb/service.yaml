@@ -11,5 +11,4 @@ spec:
   ports:
     - port: 27017
       targetPort: 27017
-  # ClusterIP — MongoDB is only reachable inside the cluster
-  type: ClusterIP
+  clusterIP: None

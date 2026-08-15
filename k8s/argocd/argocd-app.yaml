@@ -3,28 +3,25 @@ kind: Application
 metadata:
   name: spend-sense
   namespace: argocd
-  # Ensure ArgoCD cascades deletes to child resources
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-
   source:
     repoURL: https://github.com/HarshDalmia2005/Expense-Tracker-Opensoft.git
     targetRevision: main
-    # ArgoCD watches everything inside the k8s/ directory
     path: k8s
-
+    directory:
+      exclude: 'backend/secret.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: spend-sense
-
   syncPolicy:
     automated:
-      prune: true        # delete resources removed from Git
-      selfHeal: true     # revert any manual kubectl changes
+      prune: true
+      selfHeal: true
     syncOptions:
-      - CreateNamespace=true          # creates spend-sense ns if missing
+      - CreateNamespace=true
       - PrunePropagationPolicy=foreground
       - PruneLast=true
     retry:

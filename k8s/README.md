@@ -119,7 +119,7 @@ sudo kubectl create secret generic backend-secret \
   --from-literal=JWT_SECRET="<generate a random 64-char string>" \
   --from-literal=SESSION_SECRET="<generate a random 64-char string>" \
   --from-literal=FRONTEND_URL="https://spendsense.duckdns.org" \
-  --from-literal=BACKEND_URL="https://spendsense.duckdns.org" \
+  --from-literal=BACKEND_URL="https://spendsense.duckdns.org/api" \
   --from-literal=GOOGLE_CLIENT_ID="<from Google Cloud Console>" \
   --from-literal=GOOGLE_CLIENT_SECRET="<from Google Cloud Console>" \
   --from-literal=GEMINI_API_KEY="<from aistudio.google.com>" \
@@ -241,9 +241,8 @@ k8s/
 ├── cert-manager/
 │   └── cluster-issuer.yaml          ← Let's Encrypt staging + prod issuers
 ├── mongodb/
-│   ├── pvc.yaml                     ← 2Gi persistent volume for data
-│   ├── deployment.yaml              ← MongoDB 7.0 with health checks
-│   └── service.yaml                 ← ClusterIP :27017
+│   ├── deployment.yaml              ← MongoDB 7.0 StatefulSet with health checks
+│   └── service.yaml                 ← Headless service :27017
 ├── backend/
 │   ├── secret.yaml                  ← TEMPLATE ONLY — do not put real values here
 │   ├── deployment.yaml              ← image tag updated by CI on every push

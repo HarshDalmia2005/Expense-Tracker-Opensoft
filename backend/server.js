@@ -46,17 +46,17 @@ app.use(passport.session());
 
 const port = process.env.PORT;
 app.get("/", (req, res) => res.send("API is running..."));
-app.use('/', authenticationRouter);
-app.use('/', expenseRouter);
-app.use('/', userRouter)
-app.use('/', activityRouter)
-app.use('/',groupRouter)
-app.use('/',billRouter)
-app.use('/', oauthRouter);
-app.use('/', chatbotRouter);
-app.use('/', ocrScanRouter);
-app.use('/', goalRouter);
-app.use('/', notificationRouter);
+app.use('/api', authenticationRouter);
+app.use('/api', expenseRouter);
+app.use('/api', userRouter)
+app.use('/api', activityRouter)
+app.use('/api',groupRouter)
+app.use('/api',billRouter)
+app.use('/api', oauthRouter);
+app.use('/api', chatbotRouter);
+app.use('/api', ocrScanRouter);
+app.use('/api', goalRouter);
+app.use('/api', notificationRouter);
 
 
 app.get('/health', async(req, res) => {

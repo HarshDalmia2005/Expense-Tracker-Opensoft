@@ -1,17 +1,16 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mongodb
   namespace: spend-sense
   labels:
     app: mongodb
 spec:
+  serviceName: mongodb
   replicas: 1
   selector:
     matchLabels:
       app: mongodb
-  strategy:
-    type: Recreate          # single-node MongoDB — Recreate avoids dual-write issues
   template:
     metadata:
       labels:
@@ -48,7 +47,13 @@ spec:
                 - "db.adminCommand('ping')"
             initialDelaySeconds: 10
             periodSeconds: 10
-      volumes:
-        - name: mongodb-data
-          persistentVolumeClaim:
-            claimName: mongodb-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: mongodb-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: 2Gi

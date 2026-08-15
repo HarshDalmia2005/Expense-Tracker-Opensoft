@@ -4,12 +4,9 @@ metadata:
   name: spend-sense-ingress
   namespace: spend-sense
   annotations:
-    # cert-manager will auto-provision a Let's Encrypt certificate
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    # Traefik (k3s default ingress) annotations
     traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
     traefik.ingress.kubernetes.io/router.tls: "true"
-    # Increase body limit for OCR receipt uploads (10MB)
     traefik.ingress.kubernetes.io/buffering: |
       maxRequestBodyBytes = 10485760
 spec:
@@ -17,12 +14,11 @@ spec:
   tls:
     - hosts:
         - spendsense.duckdns.org
-      secretName: spend-sense-tls    # cert-manager stores cert here
+      secretName: spend-sense-tls
   rules:
     - host: spendsense.duckdns.org
       http:
         paths:
-          # All API traffic → backend service
           - path: /api
             pathType: Prefix
             backend:
@@ -30,15 +26,13 @@ spec:
                 name: backend
                 port:
                   number: 5000
-          # OAuth callback (Passport.js uses /oauth/...)
-          - path: /oauth
-            pathType: Prefix
+          - path: /health
+            pathType: Exact
             backend:
               service:
                 name: backend
                 port:
                   number: 5000
-          # Everything else → React frontend
           - path: /
             pathType: Prefix
             backend:

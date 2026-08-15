@@ -173,6 +173,38 @@ Services:
 
 ---
 
+## EC2 / Cloud Deployment
+
+We provide a fully automated script (`deploy.sh`) to spin up the entire application on an AWS EC2 instance (or any Ubuntu VM) using Kubernetes (k3s), ArgoCD, and Let's Encrypt SSL.
+
+### 1. Setup the Server
+1. SSH into your EC2 instance.
+2. Clone the repository and run the setup script:
+   ```bash
+   git clone https://github.com/HarshDalmia2005/Expense-Tracker-Opensoft.git
+   cd Expense-Tracker-Opensoft
+   chmod +x deploy.sh
+   ./deploy.sh
+   ```
+*(Note: Because `deploy.sh` contains sensitive environment variables, it is ignored by `.gitignore`. You should manually copy the script to your server instead of committing it).*
+
+### 2. Required AWS Security Group Rules
+Ensure the following ports are open in your EC2 Security Group (Inbound Rules):
+- **80** (HTTP) - Required for web traffic and Let's Encrypt verification.
+- **443** (HTTPS) - Required for secure web traffic.
+- **30000-32767** (Custom TCP) - Required to access the ArgoCD Dashboard (NodePort).
+
+### 3. GitHub Container Registry (GHCR)
+By default, GitHub Packages creates your Docker images as **Private**. You must make them public:
+1. Go to your GitHub profile → **Packages**.
+2. Select `spend-sense-backend` and go to **Package Settings**.
+3. Under **Danger Zone**, change the visibility to **Public**.
+4. Repeat for `spend-sense-frontend`.
+
+For full Kubernetes documentation, see [k8s/README.md](k8s/README.md).
+
+---
+
 ## Usage
 
 1. Open the app at `http://localhost:5173` (dev) or `http://localhost` (Docker)

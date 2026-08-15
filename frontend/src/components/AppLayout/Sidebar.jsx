@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronRight,
   Menu,
+  Bell,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +35,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     { id: "Expense", icon: <HandCoins />, label: "Expenses", path: "/expenses" },
     { id: "Group", icon: <Users />, label: "Groups", path: "/groups" },
     { id: "Budget", icon: <Wallet />, label: "Budgets & Goals", path: "/budget" },
+    { id: "Notifications", icon: <Bell />, label: "Notifications", path: "/notifications" },
     { id: "Setting", icon: <Settings />, label: "Settings", path: "/settings" },
   ];
 

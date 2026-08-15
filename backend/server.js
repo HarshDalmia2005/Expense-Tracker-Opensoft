@@ -10,6 +10,7 @@ import oauthRouter from './src/routers/oauth.router.js';
 import chatbotRouter from './src/routers/chatbot.router.js';
 import ocrScanRouter from './src/routers/ocr.router.js';
 import goalRouter from './src/routers/goal.router.js';
+import notificationRouter from './src/routers/notification.router.js';
 import { connectDB } from "./src/db/index.js";
 import { seedAdmin } from "./src/db/seed.js";
 import dotenv from 'dotenv';
@@ -55,6 +56,7 @@ app.use('/', oauthRouter);
 app.use('/', chatbotRouter);
 app.use('/', ocrScanRouter);
 app.use('/', goalRouter);
+app.use('/', notificationRouter);
 
 
 app.get('/health', async(req, res) => {

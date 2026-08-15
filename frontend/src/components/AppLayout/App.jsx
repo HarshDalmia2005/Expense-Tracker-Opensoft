@@ -14,6 +14,7 @@ import { useAuth } from "../Context/AuthContext"
 import BillDetails from "../Groups/BillDetails"
 import ProfileSetting2 from "../profilepage/ProfileSetting2"
 import OauthSuccess from "../Authentication/OauthSuccess"
+import Notifications from "../Notifications/Notifications"
 
 function App() {
   const { user } = useAuth();
@@ -31,6 +32,7 @@ function App() {
           <Route path="/groups/:groupId" element={<BillDetails />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<ProfileSetting2 />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/" element={<Dashboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

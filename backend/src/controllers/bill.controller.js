@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { Bill } from "../models/Bill.js";
 import { Group } from "../models/Group.js";
+import { createNotification } from "./notification.controller.js";
 
 // "/createBill" - Create a bill with multiple payers
 export const createBill = async (req, res) => {
@@ -34,6 +35,19 @@ export const createBill = async (req, res) => {
         });
 
         await Group.findByIdAndUpdate(group, { $push: { expenses: newBill._id } });
+
+        // Notify all participants about the new bill
+        const groupDoc = await Group.findById(group).select('name');
+        const groupName = groupDoc ? groupDoc.name : 'your group';
+        const notifyPromises = participants.map((participantId) =>
+            createNotification(
+                participantId,
+                'bill_created',
+                `New bill "${description}" ($${amount}) was added to group "${groupName}"`,
+                `/groups/${group}`
+            )
+        );
+        await Promise.all(notifyPromises);
 
         res.status(201).json({ message: "Bill created successfully", bill: newBill });
     } catch (error) {
@@ -77,10 +91,32 @@ export const getBillById = async (req, res) => {
 export const updateBill = async (req, res) => {
     try {
         const { billId } = req.params;
-        const updatedBill = await Bill.findByIdAndUpdate(billId, req.body, { new: true });
+
+        // Capture previous status before update
+        const existingBill = await Bill.findById(billId);
+
+        const updatedBill = await Bill.findByIdAndUpdate(billId, req.body, { new: true })
+            .populate('participants', '_id');
 
         if (!updatedBill) {
             return res.status(404).json({ message: "Bill not found" });
+        }
+
+        // Fire notifications if the bill was just marked Paid
+        if (
+            existingBill &&
+            existingBill.status !== 'Paid' &&
+            updatedBill.status === 'Paid'
+        ) {
+            const notifyPromises = updatedBill.participants.map((participant) =>
+                createNotification(
+                    participant._id,
+                    'bill_settled',
+                    `Bill "${updatedBill.description}" has been marked as settled!`,
+                    `/groups/${updatedBill.group}`
+                )
+            );
+            await Promise.all(notifyPromises);
         }
 
         res.status(200).json({ message: "Bill updated successfully", bill: updatedBill });

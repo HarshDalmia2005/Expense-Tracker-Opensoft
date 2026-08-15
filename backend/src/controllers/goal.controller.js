@@ -1,6 +1,7 @@
 import { Goal } from '../models/Goal.js';
 import { Expense } from '../models/expenseModel.js';
 import { logActivity } from './activity.controller.js';
+import { createNotification } from './notification.controller.js';
 
 export const createGoal = async (req, res) => {
     try {
@@ -25,6 +26,12 @@ export const createGoal = async (req, res) => {
         });
 
         await logActivity(id, 'Goal creation');
+        await createNotification(
+            id,
+            'general',
+            `New goal created: "${title}"`,
+            '/budget'
+        );
 
         return res.status(201).json(newGoal);
     } catch (error) {
@@ -176,6 +183,15 @@ export const addContribution = async (req, res) => {
 
         await goal.save();
         await logActivity(userId, 'Goal contribution');
+
+        if (goal.status === 'completed') {
+            await createNotification(
+                userId,
+                'goal_completed',
+                `🎉 Goal "${goal.title}" has been completed!`,
+                '/budget'
+            );
+        }
 
         return res.status(200).json({
             message: 'Contribution added successfully',

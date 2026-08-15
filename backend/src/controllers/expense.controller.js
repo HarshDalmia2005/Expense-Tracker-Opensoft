@@ -2,6 +2,7 @@
 import { Expense } from '../models/expenseModel.js'
 import { User } from '../models/User.js';
 import { logActivity } from './activity.controller.js';
+import { createNotification } from './notification.controller.js';
 
 export const AddExpense = async (request, response) => {
     try {
@@ -36,6 +37,12 @@ export const AddExpense = async (request, response) => {
         );
 
         await logActivity(id,"Expense addition");
+        await createNotification(
+            id,
+            'expense_added',
+            `New expense added: "${description}" — $${amount}`,
+            '/expenses'
+        );
 
         return response.status(201).send(expense);
     } catch (error) {

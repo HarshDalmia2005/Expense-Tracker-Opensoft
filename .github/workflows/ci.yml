@@ -39,7 +39,8 @@ jobs:
 
       - name: Check backend syntax
         working-directory: backend
-        run: node --input-type=module --eval "
+        run: |
+          node --input-type=module << 'NODESEOF'
           import { readFileSync, readdirSync, statSync } from 'fs';
           import { join } from 'path';
           function walk(dir) {
@@ -47,13 +48,14 @@ jobs:
               const p = join(dir, f);
               if (statSync(p).isDirectory() && f !== 'node_modules') walk(p);
               else if (f.endsWith('.js')) {
-                try { new Function(readFileSync(p,'utf8')); }
+                try { new Function(readFileSync(p, 'utf8')); }
                 catch(e) { if (!e.message.includes('import')) { console.error(p, e.message); process.exit(1); } }
               }
             }
           }
-          walk('src'); console.log('Backend syntax OK');
-        "
+          walk('src');
+          console.log('Backend syntax OK');
+          NODESEOF
 
   # ────────────────────────────────────────────────────────────
   # JOB 2 – Build Docker images & push to GHCR

@@ -53,9 +53,8 @@ export const AuthProvider = ({ children }) => {
                 setUser(data.user);
             }
         } catch (error) {
+            // Network error or timeout — don't log the user out, just keep current state
             console.error("Error verifying token:", error);
-            setIsAuthenticated(false);
-            if (!isAuthPage) navigate("/signin");
         }
     };
 

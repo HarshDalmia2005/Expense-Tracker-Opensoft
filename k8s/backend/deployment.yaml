@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ghcr.io/harshdalmia2005/spend-sense-backend:latest
+          image: ghcr.io/harshdalmia2005/spend-sense-backend:e550b22
           imagePullPolicy: Always
           ports:
             - containerPort: 5000

@@ -7,6 +7,9 @@ import activityRouter from './src/routers/activity.router.js'
 import groupRouter from './src/routers/group.router.js'
 import billRouter from './src/routers/bills.router.js'
 import oauthRouter from './src/routers/oauth.router.js';
+import chatbotRouter from './src/routers/chatbot.router.js';
+import ocrScanRouter from './src/routers/ocr.router.js';
+import goalRouter from './src/routers/goal.router.js';
 import { connectDB } from "./src/db/index.js";
 import { seedAdmin } from "./src/db/seed.js";
 import dotenv from 'dotenv';
@@ -19,7 +22,7 @@ dotenv.config();
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true
@@ -49,6 +52,9 @@ app.use('/', activityRouter)
 app.use('/',groupRouter)
 app.use('/',billRouter)
 app.use('/', oauthRouter);
+app.use('/', chatbotRouter);
+app.use('/', ocrScanRouter);
+app.use('/', goalRouter);
 
 
 app.get('/health', async(req, res) => {

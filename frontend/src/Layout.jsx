@@ -8,6 +8,7 @@ import SignUpPage from "./components/Authentication/SignUpPage";
 import App from "./components/AppLayout/App";
 import Toast from "./components/Message/Toast";
 import { useAuth } from "./components/Context/AuthContext";
+import ChatBot from "./components/Chatbot/ChatBot";
 
 const Layout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -47,6 +48,7 @@ const Layout = () => {
                 </div>
             </div>
             <Footer />
+            <ChatBot />
         </div>
     );
 };

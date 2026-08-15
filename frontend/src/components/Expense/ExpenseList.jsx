@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Pencil, Trash2, Eye, X, Calendar, DollarSign, Tag, CreditCard, FileText, Search, ChevronUp, ChevronDown, Plus, Menu, Loader, IndianRupeeIcon } from 'lucide-react'
+import { Pencil, Trash2, Eye, X, Calendar, DollarSign, Tag, CreditCard, FileText, Search, ChevronUp, ChevronDown, Plus, Menu, Loader, IndianRupeeIcon, Camera } from 'lucide-react'
 import Modal from './Modal';
 import axios from 'axios';
 import { useAuth } from '../Context/AuthContext';
@@ -7,6 +7,7 @@ import InactiveAccount from '../AuthRestrict/InactiveAccount';
 import Toast from '../Message/Toast';
 import { ConfirmModal } from '../Message/ConfirmModal';
 import MobileActionMenu from './MobileActionMenu';
+import ReceiptScanner from './ReceiptScanner';
 
 const ExpenseList = () => {
   const [expenses, setExpenses] = useState([]);
@@ -29,6 +30,7 @@ const ExpenseList = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
+  const [showScanner, setShowScanner] = useState(false);
 
   const openConfirmModal = (message, action) => {
     setConfirmModal({
@@ -321,14 +323,24 @@ const ExpenseList = () => {
         {/* Header with Title and Add Button */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-0">Expense Tracker</h1>
-          <button
-            onClick={() => setAddExpenseModal(true)}
-            className="flex items-center justify-center gap-2 bg-yellow-400 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-lg shadow-md hover:bg-yellow-500 transition-all duration-200 font-medium"
-          >
-            <Plus size={18} />
-            <span className="hidden sm:inline">Add New Expense</span>
-            <span className="sm:hidden">Add</span>
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowScanner(true)}
+              className="flex items-center justify-center gap-2 bg-purple-600 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-lg shadow-md hover:bg-purple-700 transition-all duration-200 font-medium"
+            >
+              <Camera size={18} />
+              <span className="hidden sm:inline">Scan Receipt</span>
+              <span className="sm:hidden">Scan</span>
+            </button>
+            <button
+              onClick={() => setAddExpenseModal(true)}
+              className="flex items-center justify-center gap-2 bg-yellow-400 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-lg shadow-md hover:bg-yellow-500 transition-all duration-200 font-medium"
+            >
+              <Plus size={18} />
+              <span className="hidden sm:inline">Add New Expense</span>
+              <span className="sm:hidden">Add</span>
+            </button>
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -719,6 +731,24 @@ const ExpenseList = () => {
           onSave={handleSaveEditedExpense}
           expense={expenseToEdit}
           handleInputChange={handleInputChange}
+        />
+      )}
+
+      {/* Receipt Scanner */}
+      {showScanner && (
+        <ReceiptScanner
+          onClose={() => setShowScanner(false)}
+          onScanComplete={(data) => {
+            setNewExpense({
+              amount: data.amount || '',
+              description: data.description || '',
+              date: data.date || '',
+              category: data.category || '',
+              paymentMethod: data.paymentMethod || '',
+            });
+            setShowScanner(false);
+            setAddExpenseModal(true);
+          }}
         />
       )}
     </div>

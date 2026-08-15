@@ -301,16 +301,3 @@ NotificationItem.propTypes = {
 };
 
 export default Notifications;
-
-BACKEND.propTypes = {
-  notification: PropTypes.shape({
-    createdAt: PropTypes.any,
-    _id: PropTypes.any,
-    isRead: PropTypes.any,
-    message: PropTypes.any,
-    type: PropTypes.any,
-    link: PropTypes.any,
-  }),
-  onMarkRead: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-};

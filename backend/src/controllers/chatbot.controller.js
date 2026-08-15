@@ -84,7 +84,7 @@ export const sendMessage = async (req, res) => {
         const expenses = await Expense.find({ createdBy: userId });
         const expenseSummary = buildExpenseSummary(expenses);
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
         // Build the conversation for Gemini
         const fullPrompt = `${SYSTEM_PROMPT}\n\nHere is the user's financial data:\n${expenseSummary}\n\n`;

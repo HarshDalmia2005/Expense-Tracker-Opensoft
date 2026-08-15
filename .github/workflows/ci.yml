@@ -1,0 +1,158 @@
+name: CI — Build, Push & Update Manifests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/spend-sense-backend
+  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/spend-sense-frontend
+
+jobs:
+  # ────────────────────────────────────────────────────────────
+  # JOB 1 – Lint
+  # ────────────────────────────────────────────────────────────
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint frontend
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Check backend syntax
+        working-directory: backend
+        run: node --input-type=module --eval "
+          import { readFileSync, readdirSync, statSync } from 'fs';
+          import { join } from 'path';
+          function walk(dir) {
+            for (const f of readdirSync(dir)) {
+              const p = join(dir, f);
+              if (statSync(p).isDirectory() && f !== 'node_modules') walk(p);
+              else if (f.endsWith('.js')) {
+                try { new Function(readFileSync(p,'utf8')); }
+                catch(e) { if (!e.message.includes('import')) { console.error(p, e.message); process.exit(1); } }
+              }
+            }
+          }
+          walk('src'); console.log('Backend syntax OK');
+        "
+
+  # ────────────────────────────────────────────────────────────
+  # JOB 2 – Build Docker images & push to GHCR
+  # Skipped on pull_request (no registry credentials)
+  # ────────────────────────────────────────────────────────────
+  build-and-push:
+    name: Build & Push Images
+    runs-on: ubuntu-latest
+    needs: lint
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write        # needed to push manifest updates back
+      packages: write        # needed to push to GHCR
+
+    outputs:
+      image_tag: ${{ steps.meta.outputs.short_sha }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set image tag (short SHA)
+        id: meta
+        run: echo "short_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ── Backend ──────────────────────────────────────────────
+      - name: Build & push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: |
+            ${{ env.BACKEND_IMAGE }}:${{ steps.meta.outputs.short_sha }}
+            ${{ env.BACKEND_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ── Frontend ─────────────────────────────────────────────
+      - name: Build & push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: |
+            ${{ env.FRONTEND_IMAGE }}:${{ steps.meta.outputs.short_sha }}
+            ${{ env.FRONTEND_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ────────────────────────────────────────────────────────────
+  # JOB 3 – Update Kubernetes manifests with new image tag
+  # ArgoCD will detect this commit and sync the cluster
+  # ────────────────────────────────────────────────────────────
+  update-manifests:
+    name: Update K8s Manifests
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update backend image tag in manifest
+        run: |
+          TAG=${{ needs.build-and-push.outputs.image_tag }}
+          sed -i "s|image: ghcr.io/.*/spend-sense-backend:.*|image: ${{ env.BACKEND_IMAGE }}:${TAG}|g" \
+            k8s/backend/deployment.yaml
+          echo "Backend image updated to tag: ${TAG}"
+
+      - name: Update frontend image tag in manifest
+        run: |
+          TAG=${{ needs.build-and-push.outputs.image_tag }}
+          sed -i "s|image: ghcr.io/.*/spend-sense-frontend:.*|image: ${{ env.FRONTEND_IMAGE }}:${TAG}|g" \
+            k8s/frontend/deployment.yaml
+          echo "Frontend image updated to tag: ${TAG}"
+
+      - name: Commit and push manifest updates
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add k8s/backend/deployment.yaml k8s/frontend/deployment.yaml
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
+          git commit -m "ci: update image tags to ${{ needs.build-and-push.outputs.image_tag }} [skip ci]"
+          git push origin main

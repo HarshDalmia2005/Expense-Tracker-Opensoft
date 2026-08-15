@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from "react";
 import { Camera, Upload, X, Loader2, CheckCircle, AlertCircle, Image } from 'lucide-react';
 import './ReceiptScanner.css';
+import PropTypes from 'prop-types';
 
 const ReceiptScanner = ({ onScanComplete, onClose }) => {
     const [imagePreview, setImagePreview] = useState(null);
@@ -276,6 +277,12 @@ const ReceiptScanner = ({ onScanComplete, onClose }) => {
             </div>
         </div>
     );
+};
+
+
+ReceiptScanner.propTypes = {
+  onScanComplete: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default ReceiptScanner;

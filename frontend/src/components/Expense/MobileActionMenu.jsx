@@ -1,5 +1,6 @@
 import { Eye, Menu, Pencil, Trash2 } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
+import PropTypes from 'prop-types';
 
 const MobileActionMenu = ({ expense, handleDeleteExpense, handleViewExpense, handleEditExpense }) => {
   const [showActions, setShowActions] = useState(false);
@@ -48,6 +49,16 @@ const MobileActionMenu = ({ expense, handleDeleteExpense, handleViewExpense, han
       )}
     </div>
   );
+};
+
+
+MobileActionMenu.propTypes = {
+  expense: PropTypes.shape({
+    _id: PropTypes.any,
+  }),
+  handleDeleteExpense: PropTypes.func.isRequired,
+  handleViewExpense: PropTypes.func.isRequired,
+  handleEditExpense: PropTypes.func.isRequired,
 };
 
 export default MobileActionMenu;

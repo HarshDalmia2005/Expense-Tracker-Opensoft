@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, KeyRound, Loader, Mail, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import Toast from "../Message/Toast";
 
@@ -9,7 +8,7 @@ const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn, loading, handleGoogleSignIn } = useAuth();
+  const { signIn, loading } = useAuth();
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
   const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -25,7 +24,7 @@ const SignInPage = () => {
     setToasts(prev => prev.filter(toast => toast.id !== id));
   };
 
-  const navigate = useNavigate();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +43,7 @@ const SignInPage = () => {
         },
         body: JSON.stringify({ email: checkEmail }),
       });
-      const data = await response.json();
+      await response.json();
       if (response.status === 200) {
         setIsResetPasswordModalOpen(true);
         setIsForgotModalOpen(false);
@@ -67,7 +66,7 @@ const SignInPage = () => {
         },
         body: JSON.stringify({ email: checkEmail, newPassword }),
       });
-      const data = await response.json();
+      await response.json();
       if (response.status === 200) {
         setIsResetPasswordModalOpen(false);
         setNewPassword("");
@@ -231,7 +230,7 @@ const SignInPage = () => {
 
           <div className="text-center mt-4">
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link to="/signUp" className="font-medium text-purple-600 hover:text-purple-500 transition-all duration-200">
                 Sign Up
               </Link>

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Users, Activity, BarChart2, Shield, TrendingDownIcon, TrendingUpIcon, Loader } from "lucide-react";
 import UserActivity from "./UserActivity";
 import RecentUsers from "./RecentUsers";
-import CountUp from "react-countup";
 import { useAuth } from "../Context/AuthContext";
 import AccessDenial from "../AuthRestrict/AccessDenial";
 
@@ -45,7 +44,7 @@ const AdminDash = () => {
         };
 
         fetchStats();
-    }, []);
+    }, [user?._id]);
 
     const dashboardStats = [
         {

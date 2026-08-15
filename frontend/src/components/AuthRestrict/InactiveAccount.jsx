@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 
@@ -10,7 +10,7 @@ const InactiveAccount = () => {
     if (user?.status === "Active") {
       navigate("/");
     }
-  }, [user]);
+  }, [user, navigate]);
 
   const handleStatus = async () => {
     const isConfirmed = window.confirm("Are you sure you want to change the status of this user?");

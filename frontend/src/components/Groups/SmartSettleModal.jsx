@@ -1,6 +1,7 @@
 import { Loader, Info, ArrowRight, CheckCircle2, X } from 'lucide-react'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from "react";
 import Toast from '../Message/Toast'
+import PropTypes from 'prop-types';
 
 const SmartSettleModal = ({ billId, fetchBills, getBillBalances, ToggleSettleUpModal }) => {
     const [settleBill, setSettleBill] = useState([])
@@ -17,9 +18,34 @@ const SmartSettleModal = ({ billId, fetchBills, getBillBalances, ToggleSettleUpM
         setToasts(prev => prev.filter(toast => toast.id !== id));
     };
 
+    const fetchSmartSettle = useCallback(async () => {
+        try {
+            setLoading(true)
+            setError(null)
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/getSmartBillSettle/${billId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            const data = await response.json()
+            if (response.ok) {
+                setSettleBill(data.settlements || [])
+            } else {
+                setError(data.message || "Failed to fetch settlement data")
+                console.error("Error fetching smart settle data:", data.message)
+            }
+        } catch (error) {
+            setError("An unexpected error occurred")
+            console.error("Error fetching smart settle data:", error)
+        } finally {
+            setLoading(false)
+        }
+    }, [billId]);
+
     useEffect(() => {
         fetchSmartSettle()
-    }, [billId])
+    }, [billId, fetchSmartSettle])
 
     const settleUpBill = async (billId) => {
         try {
@@ -47,30 +73,6 @@ const SmartSettleModal = ({ billId, fetchBills, getBillBalances, ToggleSettleUpM
         }
     };
 
-    const fetchSmartSettle = async () => {
-        try {
-            setLoading(true)
-            setError(null)
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/getSmartBillSettle/${billId}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            })
-            const data = await response.json()
-            if (response.ok) {
-                setSettleBill(data.settlements || [])
-            } else {
-                setError(data.message || "Failed to fetch settlement data")
-                console.error("Error fetching smart settle data:", data.message)
-            }
-        } catch (error) {
-            setError("An unexpected error occurred")
-            console.error("Error fetching smart settle data:", error)
-        } finally {
-            setLoading(false)
-        }
-    }
 
     if (loading) {
         return (
@@ -188,5 +190,13 @@ const SmartSettleModal = ({ billId, fetchBills, getBillBalances, ToggleSettleUpM
         </div>
     )
 }
+
+
+SmartSettleModal.propTypes = {
+  billId: PropTypes.any.isRequired,
+  fetchBills: PropTypes.any.isRequired,
+  getBillBalances: PropTypes.any.isRequired,
+  ToggleSettleUpModal: PropTypes.any.isRequired,
+};
 
 export default SmartSettleModal

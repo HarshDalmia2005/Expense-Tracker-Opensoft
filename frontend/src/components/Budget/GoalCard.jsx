@@ -1,5 +1,5 @@
-import React from 'react';
 import { Target, TrendingDown, Calendar, Pencil, Trash2, PiggyBank, ArrowUpCircle } from 'lucide-react';
+import PropTypes from 'prop-types';
 
 const GoalCard = ({ goal, onEdit, onDelete, onContribute }) => {
     const progress = goal.progress || 0;
@@ -185,6 +185,24 @@ const GoalCard = ({ goal, onEdit, onDelete, onContribute }) => {
             </div>
         </div>
     );
+};
+
+
+GoalCard.propTypes = {
+  goal: PropTypes.shape({
+    _id: PropTypes.any,
+    deadline: PropTypes.any,
+    title: PropTypes.any,
+    category: PropTypes.any,
+    progress: PropTypes.any,
+    currentAmount: PropTypes.any,
+    type: PropTypes.any,
+    status: PropTypes.any,
+    targetAmount: PropTypes.any,
+  }),
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onContribute: PropTypes.func.isRequired,
 };
 
 export default GoalCard;

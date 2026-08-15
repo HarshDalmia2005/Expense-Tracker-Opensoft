@@ -1,13 +1,8 @@
-import React, { useState,useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useState,useEffect } from "react";
 import Sidebar from "./components/AppLayout/Sidebar";
 import Footer from "./components/AppLayout/Footer";
 import Navbar from "./components/AppLayout/Navbar";
-import SignInPage from "./components/Authentication/SignInPage";
-import SignUpPage from "./components/Authentication/SignUpPage";
 import App from "./components/AppLayout/App";
-import Toast from "./components/Message/Toast";
-import { useAuth } from "./components/Context/AuthContext";
 import ChatBot from "./components/Chatbot/ChatBot";
 
 const Layout = () => {

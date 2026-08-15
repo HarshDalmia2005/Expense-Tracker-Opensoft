@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react"
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import "../../App.css"
 import Dashboard from "../UserDashboard/Dashboard"
 import AdminDash from "../Admin/AdminDash"
@@ -10,15 +9,11 @@ import ExpenseList from "../Expense/ExpenseList"
 import UserManage from "../Admin/UserManage"
 import ActivityMonitor from "../Admin/ActivityMonitor"
 import SystemHealth from "../Admin/SystemHealth"
-import { useAuth } from "../Context/AuthContext"
 import BillDetails from "../Groups/BillDetails"
 import ProfileSetting2 from "../profilepage/ProfileSetting2"
-import OauthSuccess from "../Authentication/OauthSuccess"
 import Notifications from "../Notifications/Notifications"
 
 function App() {
-  const { user } = useAuth();
-
   return (
     <div className="min-h-screen">
       <Routes>

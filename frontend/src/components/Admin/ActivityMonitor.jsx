@@ -1,5 +1,5 @@
-import { ChevronLeft, ChevronRight, Filter, Loader, MoreHorizontal, Search } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Filter, Loader, Search } from 'lucide-react';
+import { useState, useEffect } from "react";
 import Avatar from 'react-avatar';
 import { useAuth } from '../Context/AuthContext';
 import AccessDenial from '../AuthRestrict/AccessDenial';
@@ -41,7 +41,7 @@ const ActivityMonitor = () => {
             }
         };
         fetchActivity();
-    }, []);
+    }, [user?._id]);
 
 
     // Filter users based on search query and filters

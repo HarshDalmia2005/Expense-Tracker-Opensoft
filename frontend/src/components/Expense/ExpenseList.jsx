@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Pencil, Trash2, Eye, X, Calendar, DollarSign, Tag, CreditCard, FileText, Search, ChevronUp, ChevronDown, Plus, Menu, Loader, IndianRupeeIcon, Camera } from 'lucide-react'
+import { useState, useEffect } from "react";
+import { Pencil, Trash2, Eye, X, Calendar, Tag, CreditCard, FileText, Search, ChevronUp, ChevronDown, Plus, Loader, IndianRupeeIcon, Camera } from 'lucide-react'
 import Modal from './Modal';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +31,7 @@ const ExpenseList = () => {
     onConfirm: () => { },
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage] = useState(5); // Adjust items per page as needed
   const [showScanner, setShowScanner] = useState(false);
 
   const openConfirmModal = (message, action) => {
@@ -171,7 +171,7 @@ const ExpenseList = () => {
       } else {
         showToast("Failed to add expense. Please try again.", "error")
       }
-    } catch (error) {
+    } catch {
       showToast("Failed to add expense. Please try again.", "error")
     }
   };
@@ -243,7 +243,7 @@ const ExpenseList = () => {
         }
         setExpenses(expenses?.map((expense) => (expense._id === expenseToEdit._id ? expenseToEdit : expense)));
         showToast("edited successfully!", "success")
-      } catch (error) {
+      } catch {
         showToast("Failed to edit. Please try again.", "error")
 
       }
@@ -276,7 +276,7 @@ const ExpenseList = () => {
         }
         const data = await response.json();
         setExpenses(data);
-      } catch (error) {
+      } catch {
         showToast("Failed to Fetch Expenses", "error")
       }finally {
         setLoading(false);

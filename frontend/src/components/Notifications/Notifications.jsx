@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from "react";
 import {
     Bell,
     CheckCheck,
@@ -11,8 +11,9 @@ import {
     Info,
     Loader2,
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
+import PropTypes from 'prop-types';
 
 const BACKEND = import.meta.env.VITE_BACKEND_URL;
 
@@ -126,7 +127,7 @@ const Notifications = () => {
         } finally {
             setLoading(false);
         }
-    }, [user, token]);
+    }, [user, token, showToast]);
 
     useEffect(() => {
         fetchNotifications();
@@ -286,4 +287,30 @@ const Notifications = () => {
     );
 };
 
+NotificationItem.propTypes = {
+    notification: PropTypes.shape({
+        type: PropTypes.string,
+        isRead: PropTypes.bool,
+        _id: PropTypes.string,
+        link: PropTypes.string,
+        message: PropTypes.string,
+        createdAt: PropTypes.string
+    }).isRequired,
+    onMarkRead: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired
+};
+
 export default Notifications;
+
+BACKEND.propTypes = {
+  notification: PropTypes.shape({
+    createdAt: PropTypes.any,
+    _id: PropTypes.any,
+    isRead: PropTypes.any,
+    message: PropTypes.any,
+    type: PropTypes.any,
+    link: PropTypes.any,
+  }),
+  onMarkRead: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};

@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, Area, AreaChart
 } from "recharts";
-import { 
-  TrendingUp, TrendingDown, PieChartIcon, CreditCard, Calendar, ArrowRight, 
-  DollarSign, Loader, Menu, X, IndianRupeeIcon, Activity, AlertCircle, ShoppingBag, List
+import PropTypes from 'prop-types';
+import {
+  TrendingUp, TrendingDown, PieChartIcon, CreditCard, Calendar, Loader, Menu, X, IndianRupeeIcon, Activity, AlertCircle, ShoppingBag, List
 } from "lucide-react";
 
 const SpendingAnalyticsDashboard = () => {
@@ -230,7 +229,7 @@ const SpendingAnalyticsDashboard = () => {
               <ShoppingBag className="w-8 h-8 text-indigo-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">No expenses found</h2>
-            <p className="text-gray-500 mb-6 max-w-md mx-auto">You haven't logged any expenses yet. Start tracking your spending to unlock powerful financial insights and analytics here.</p>
+            <p className="text-gray-500 mb-6 max-w-md mx-auto">You haven&apos;t logged any expenses yet. Start tracking your spending to unlock powerful financial insights and analytics here.</p>
           </div>
         ) : (
           <>
@@ -521,6 +520,15 @@ const SpendingAnalyticsDashboard = () => {
       </div>
     </div>
   );
+};
+
+
+SpendingAnalyticsDashboard.propTypes = {
+  active: PropTypes.any,
+  payload: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.any,
+  })),
+  label: PropTypes.any,
 };
 
 export default SpendingAnalyticsDashboard;

@@ -1,4 +1,4 @@
-import React from "react";
+
 import { 
   Facebook, 
   Twitter, 
@@ -34,7 +34,7 @@ const Footer = () => {
             <p className="text-gray-600 mb-6 text-sm leading-relaxed">
               SpendSense helps you take control of your financial journey.
               Track spending, set budgets, and gain valuable insights to make
-              smarter financial decisions. Whether you're saving for a goal or
+              smarter financial decisions. Whether you&apos;re saving for a goal or
               managing day-to-day expenses, we empower you with tools to optimize
               your finances.
             </p>

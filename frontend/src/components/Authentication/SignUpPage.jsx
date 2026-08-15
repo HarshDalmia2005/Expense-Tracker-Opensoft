@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, KeyRound, Loader, Mail, User } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import Toast from "../Message/Toast";
 
@@ -12,7 +11,7 @@ const SignUpPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const navigate = useNavigate();
+
   const { signUp,loading } = useAuth();
   const [toasts, setToasts] = useState([]);
 
@@ -72,7 +71,7 @@ const SignUpPage = () => {
 
           <div className="mt-12 hidden lg:block">
             <p className="text-white text-sm">
-              "Creating an account was the first step to getting my finances in order."
+              &quot;Creating an account was the first step to getting my finances in order.&quot;
             </p>
             <p className="text-white text-xs mt-2">- Michael Rodriguez</p>
           </div>

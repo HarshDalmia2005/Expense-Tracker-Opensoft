@@ -6,9 +6,8 @@ import { Loader } from "lucide-react";
 const OauthSuccess = () => {
     const navigate = useNavigate();
     const { setUser, setIsAuthenticated } = useAuth();
-    const params = new URLSearchParams(window.location.search);
-
     useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
         const name = params.get("name");
         const email = params.get("email");
@@ -22,7 +21,7 @@ const OauthSuccess = () => {
             localStorage.setItem("user", JSON.stringify({ _id, name, email }));
             navigate("/");
         }
-    }, [params]);
+    }, [navigate, setIsAuthenticated, setUser]);
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">

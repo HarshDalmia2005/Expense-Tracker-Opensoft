@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import PropTypes from 'prop-types';
 
 export const ConfirmModal = ({ isOpen, onCancel, onConfirm, message }) => {
   if (!isOpen) return null;
@@ -30,4 +31,11 @@ export const ConfirmModal = ({ isOpen, onCancel, onConfirm, message }) => {
       </div>
     </div>
   );
+};
+
+ConfirmModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  message: PropTypes.any.isRequired,
 };

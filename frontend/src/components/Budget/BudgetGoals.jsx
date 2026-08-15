@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
     Target, Plus, Loader, PiggyBank, TrendingDown, CheckCircle,
     AlertCircle, X, Calendar, Tag, IndianRupeeIcon, FileText, Wallet
@@ -137,7 +137,7 @@ const BudgetGoals = () => {
             setShowCreateModal(false);
             setNewGoal({ title: '', type: 'savings', targetAmount: '', category: '', deadline: '' });
             showToast('Goal created successfully!', 'success');
-        } catch (error) {
+        } catch {
             showToast('Failed to create goal', 'error');
         }
     };
@@ -161,7 +161,7 @@ const BudgetGoals = () => {
                     if (!response.ok) throw new Error('Failed to delete goal');
                     setGoals(prev => prev.filter(g => g._id !== goalId));
                     showToast('Goal deleted successfully!', 'success');
-                } catch (error) {
+                } catch {
                     showToast('Failed to delete goal', 'error');
                 }
                 setConfirmModal({ isOpen: false, message: '', onConfirm: () => { } });
@@ -207,7 +207,7 @@ const BudgetGoals = () => {
             setSelectedGoal(null);
             setNewGoal({ title: '', type: 'savings', targetAmount: '', category: '', deadline: '' });
             showToast('Goal updated successfully!', 'success');
-        } catch (error) {
+        } catch {
             showToast('Failed to update goal', 'error');
         }
     };
@@ -257,7 +257,7 @@ const BudgetGoals = () => {
             setShowContributeModal(false);
             setSelectedGoal(null);
             showToast('Contribution added!', 'success');
-        } catch (error) {
+        } catch {
             showToast('Failed to add contribution', 'error');
         }
     };

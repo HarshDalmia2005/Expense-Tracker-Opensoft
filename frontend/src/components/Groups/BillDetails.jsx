@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../Context/AuthContext";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -11,7 +10,6 @@ import {
   Trash,
   CreditCard,
   Calculator,
-  IndianRupeeIcon,
   Users
 } from "lucide-react";
 import Toast from "../Message/Toast";
@@ -21,13 +19,13 @@ import SmartSettleModal from "./SmartSettleModal";
 const BillDetails = () => {
   const { groupId } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+
   const [bills, setBills] = useState([]);
   const [groupMembers, setGroupMembers] = useState([]);
   const [billDescription, setBillDescription] = useState("");
   const [billAmount, setBillAmount] = useState("");
   const [payers, setPayers] = useState([]);
-  const [selectedParticipants, setSelectedParticipants] = useState([]);
+
   const [balances, setBalances] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toasts, setToasts] = useState([]);
@@ -69,9 +67,9 @@ const BillDetails = () => {
     fetchBills();
     fetchGroupMembers();
     getBillBalances();
-  }, [groupId]);
+  }, [fetchBills, fetchGroupMembers, getBillBalances]);
 
-  const fetchBills = async () => {
+  const fetchBills = useCallback(async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/getBills/${groupId}`);
       setBills(res.data || []);
@@ -79,16 +77,16 @@ const BillDetails = () => {
       console.error("Error fetching bills:", error);
       setBills([]);
     }
-  };
+  }, [groupId]);
 
-  const fetchGroupMembers = async () => {
+  const fetchGroupMembers = useCallback(async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/getGroup/${groupId}`);
       setGroupMembers(res.data.users || []);
     } catch (error) {
       console.error("Error fetching group members:", error);
     }
-  };
+  }, [groupId]);
 
   const togglePayer = (memberId) => {
     const exists = payers.find((payer) => payer.userId === memberId);
@@ -107,10 +105,7 @@ const BillDetails = () => {
     );
   };
 
-  const getName = (id) => {
-    const member = groupMembers.find((member) => member._id === id);
-    return member ? member.name : "Unknown";
-  };
+
 
   const addBill = async () => {
     if (!billDescription || !billAmount || payers.length === 0) {
@@ -139,7 +134,6 @@ const BillDetails = () => {
       setBillDescription("");
       setBillAmount("");
       setPayers([]);
-      setSelectedParticipants([]);
       setIsModalOpen(false);
       showToast(res.data.message, 'success');
       getBillBalances();
@@ -175,7 +169,7 @@ const BillDetails = () => {
     }
   };
 
-  const getBillBalances = async () => {
+  const getBillBalances = useCallback(async () => {
     try {
       const user = JSON.parse(localStorage.getItem('user'));
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/getBalances/${groupId}?userId=${user?._id}`);
@@ -183,7 +177,7 @@ const BillDetails = () => {
     } catch (error) {
       console.error("Error fetching bill balances:", error);
     }
-  };
+  }, [groupId]);
 
   const ToggleSettleUpModal = async (bill = null) => {
     if(bill) setCurrentBill(bill);

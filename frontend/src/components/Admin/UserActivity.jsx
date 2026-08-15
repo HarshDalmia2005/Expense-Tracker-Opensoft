@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import React from "react";
 import {
     LineChart,
     Line,
@@ -12,6 +11,7 @@ import {
 } from "recharts";
 import { useAuth } from "../Context/AuthContext";
 import { TrendingUp, UserPlus } from "lucide-react";
+import PropTypes from 'prop-types';
 
 const UserActivity = () => {
     const [data, setData] = useState([]);
@@ -66,7 +66,6 @@ const UserActivity = () => {
 
     // Find the highest values to show in the summary
     const maxActiveUsers = data.length > 0 ? Math.max(...data.map(item => item.activeUsers)) : 0;
-    const maxNewUsers = data.length > 0 ? Math.max(...data.map(item => item.newUsers)) : 0;
     const totalNewUsers = data.length > 0 ? data.reduce((sum, item) => sum + item.newUsers, 0) : 0;
 
     return (
@@ -166,6 +165,15 @@ const UserActivity = () => {
             </div>
         </div>
     );
+};
+
+
+UserActivity.propTypes = {
+  active: PropTypes.any,
+  payload: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.any,
+  })),
+  label: PropTypes.any,
 };
 
 export default UserActivity;

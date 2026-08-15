@@ -1,5 +1,5 @@
-import React from 'react'
-import { X, Calendar, DollarSign, Tag, CreditCard, FileText, IndianRupee, IndianRupeeIcon } from 'lucide-react'
+import { X, Calendar, Tag, CreditCard, FileText, IndianRupeeIcon } from 'lucide-react'
+import PropTypes from 'prop-types';
 
 const Modal = ({ title, onClose, onSave, expense, handleInputChange }) => {
   return (
@@ -121,5 +121,20 @@ const Modal = ({ title, onClose, onSave, expense, handleInputChange }) => {
         </div>
   )
 }
+
+
+Modal.propTypes = {
+  title: PropTypes.any.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
+  expense: PropTypes.shape({
+    date: PropTypes.any,
+    category: PropTypes.any,
+    paymentMethod: PropTypes.any,
+    amount: PropTypes.any,
+    description: PropTypes.any,
+  }),
+  handleInputChange: PropTypes.func.isRequired,
+};
 
 export default Modal

@@ -1,5 +1,5 @@
 import { MoreHorizontal, ChevronLeft, ChevronRight, Search, Filter, Loader } from 'lucide-react'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 import Avatar from 'react-avatar';
 import { useAuth } from '../Context/AuthContext';
 import AccessDenial from '../AuthRestrict/AccessDenial';

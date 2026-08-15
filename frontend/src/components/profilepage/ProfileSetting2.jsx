@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { CalendarIcon, UserIcon, MapPinIcon, MailIcon, PhoneIcon, ArrowLeftIcon } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { CalendarIcon, MapPinIcon, PhoneIcon, ArrowLeftIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Avatar from 'react-avatar';
 import Toast from '../Message/Toast';

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { X, CheckCircle, XCircle } from 'lucide-react';
+import PropTypes from 'prop-types';
 
 const Toast = ({ message, type = 'success', duration = 3000, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -42,6 +43,14 @@ const Toast = ({ message, type = 'success', duration = 3000, onClose }) => {
       </button>
     </div>
   );
+};
+
+
+Toast.propTypes = {
+  message: PropTypes.any.isRequired,
+  type: PropTypes.any.isRequired,
+  duration: PropTypes.any.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default Toast

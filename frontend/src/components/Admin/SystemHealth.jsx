@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { ChartPie, CircleCheckBig, Clock, Cpu, Database, Loader } from "lucide-react";
 import { useAuth } from "../Context/AuthContext";
@@ -7,7 +7,6 @@ import AccessDenial from "../AuthRestrict/AccessDenial";
 const SystemHealth = () => {
     const [healthData, setHealthData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -15,8 +14,8 @@ const SystemHealth = () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/health`);
                 setHealthData(response.data);
-            } catch (err) {
-                setError("Failed to fetch system health data.");
+            } catch {
+                console.error("Failed to fetch system health data.");
             } finally {
                 setLoading(false);
             }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   CircleDollarSign,
   HandCoins,
@@ -14,37 +14,41 @@ import {
   Bell,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
+import PropTypes from 'prop-types';
+
+const menuItems = [
+  { id: "Dashboard", icon: <LayoutDashboard />, label: "Dashboard", path: "/dashboard" },
+  { id: "Expense", icon: <HandCoins />, label: "Expenses", path: "/expenses" },
+  { id: "Group", icon: <Users />, label: "Groups", path: "/groups" },
+  { id: "Budget", icon: <Wallet />, label: "Budgets & Goals", path: "/budget" },
+  { id: "Notifications", icon: <Bell />, label: "Notifications", path: "/notifications" },
+  { id: "Setting", icon: <Settings />, label: "Settings", path: "/settings" },
+];
+
+const adminItems = [
+  { id: "Admin Dashboard", label: "Dashboard", path: "/admin" },
+  { id: "User Management", label: "User Management", path: "/admin/users" },
+  { id: "Activity Monitor", label: "Activity Monitor", path: "/admin/activity" },
+  { id: "System Health and Performance", label: "System Health", path: "/admin/health" },
+];
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState("Dashboard");
   const [adminOpen, setAdminOpen] = useState(false);
-  const navigate = useNavigate();
   const { logout, user } = useAuth();
   const location = useLocation();
-  const isMobile = window.innerWidth < 768;
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleLogout = () => {
     logout();
   };
-
-  const menuItems = [
-    { id: "Dashboard", icon: <LayoutDashboard />, label: "Dashboard", path: "/dashboard" },
-    { id: "Expense", icon: <HandCoins />, label: "Expenses", path: "/expenses" },
-    { id: "Group", icon: <Users />, label: "Groups", path: "/groups" },
-    { id: "Budget", icon: <Wallet />, label: "Budgets & Goals", path: "/budget" },
-    { id: "Notifications", icon: <Bell />, label: "Notifications", path: "/notifications" },
-    { id: "Setting", icon: <Settings />, label: "Settings", path: "/settings" },
-  ];
-
-  const adminItems = [
-    { id: "Admin Dashboard", label: "Dashboard", path: "/admin" },
-    { id: "User Management", label: "User Management", path: "/admin/users" },
-    { id: "Activity Monitor", label: "Activity Monitor", path: "/admin/activity" },
-    { id: "System Health and Performance", label: "System Health", path: "/admin/health" },
-  ];
 
   const changeFocusUser = (id) => {
     setSelected(id);
@@ -71,7 +75,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     } else {
       setSelected("Dashboard");
     }
-  }, [])
+  }, [location.pathname]);
 
 
 
@@ -159,6 +163,12 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       </div>
     </div>
   );
+};
+
+
+Sidebar.propTypes = {
+  isSidebarOpen: PropTypes.bool.isRequired,
+  toggleSidebar: PropTypes.any.isRequired,
 };
 
 export default Sidebar;

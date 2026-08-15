@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   CircleUserRound,
   Menu,
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
+import PropTypes from 'prop-types';
 
 const BACKEND = import.meta.env.VITE_BACKEND_URL;
 
@@ -353,3 +354,8 @@ const Navbar = ({ isOpen, toggleSidebar }) => {
 };
 
 export default Navbar;
+
+Navbar.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  toggleSidebar: PropTypes.func.isRequired,
+};

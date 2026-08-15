@@ -47,52 +47,24 @@ GitHub Actions (CI)
 
 ---
 
-## One-Time Setup (already done on this VM)
+## One-Time Setup (Automated via deploy.sh)
 
-These steps have been completed. Documented here for reproductability on a new VM.
+We provide a fully automated `deploy.sh` script that handles the complete infrastructure setup on a fresh VM.
 
-### 1. Install k3s
-```bash
-curl -sfL https://get.k3s.io | sh -
-# Verify
-sudo kubectl get nodes
-```
-
-### 2. Install cert-manager
-```bash
-sudo kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
-# Wait for it to be ready
-sudo kubectl wait --for=condition=ready pod -l app=cert-manager -n cert-manager --timeout=90s
-```
-
-### 3. Apply all app manifests
-```bash
-cd ~/Expense-Tracker-Opensoft
-sudo kubectl apply -f k8s/namespace.yaml
-sudo kubectl apply -f k8s/mongodb/
-sudo kubectl apply -f k8s/backend/secret.yaml   # ← fill in real values first!
-sudo kubectl apply -f k8s/backend/
-sudo kubectl apply -f k8s/frontend/
-sudo kubectl apply -f k8s/cert-manager/cluster-issuer.yaml
-```
-
-### 4. Install ArgoCD
-```bash
-sudo kubectl create namespace argocd
-sudo kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-# Wait
-sudo kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-server -n argocd --timeout=120s
-# Expose UI on NodePort
-sudo kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
-# Get initial admin password
-sudo kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
-```
-
-### 5. Apply ArgoCD Application
-```bash
-sudo kubectl apply -f k8s/argocd/argocd-app.yaml
-```
-ArgoCD will now watch the `k8s/` directory in `main` and auto-sync on every change.
+### Automated Setup
+1. SSH into your EC2 instance.
+2. Create `deploy.sh` and paste the contents (do **not** commit `deploy.sh` to Git as it contains secrets).
+3. Run the script:
+   ```bash
+   chmod +x deploy.sh
+   ./deploy.sh
+   ```
+This script automatically:
+- Uninstalls any broken Kubernetes state
+- Installs `unzip`, `kiro` CLI, and `k3s`
+- Installs `cert-manager`
+- Applies your Kubernetes secrets and manifests
+- Installs `ArgoCD` and prints your admin password
 
 ---
 
@@ -257,9 +229,10 @@ k8s/
 
 ## Troubleshooting
 
-### Pods stuck in ImagePullBackOff
-The images don't exist in GHCR yet — they get pushed on the first CI run.
-Push any change to `main` to trigger the pipeline, or check:
+### Pods stuck in ErrImageNeverPull or ImagePullBackOff
+This happens because your EC2 is not allowed to pull the images from GitHub Container Registry. 
+1. The images don't exist in GHCR yet — they get pushed on the first CI run. Push any change to `main` to trigger the pipeline.
+2. **CRITICAL:** GitHub Packages are Private by default. You must go to your GitHub Profile → Packages → `spend-sense-backend` → Package Settings → Change visibility to **Public**. Repeat for the frontend.
 ```bash
 sudo kubectl describe pod -n spend-sense <pod-name>
 ```
@@ -284,3 +257,9 @@ sudo kubectl get ingress -n spend-sense
 sudo kubectl describe ingress spend-sense-ingress -n spend-sense
 sudo kubectl logs -n kube-system -l app.kubernetes.io/name=traefik -f
 ```
+
+### ArgoCD UI is not loading in the browser
+If your browser spins and times out, AWS is blocking the connection.
+1. Go to your **AWS EC2 Console** → **Security Groups**.
+2. Edit Inbound Rules and add a **Custom TCP** rule for port range **30000-32767** with source `0.0.0.0/0`.
+3. Ensure you are navigating to `https://` (ArgoCD enforces HTTPS) and bypass the self-signed certificate warning.

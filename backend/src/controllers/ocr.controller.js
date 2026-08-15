@@ -12,7 +12,7 @@ export const scanReceipt = async (req, res) => {
             return res.status(400).json({ message: 'Image data is required' });
         }
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
         const prompt = `You are an expert receipt/bill scanner. Analyze this receipt image and extract the following information. Return ONLY a valid JSON object with these fields:
 

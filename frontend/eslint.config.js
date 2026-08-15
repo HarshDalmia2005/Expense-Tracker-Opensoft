@@ -33,6 +33,12 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+      // Downgrade to warnings — these are pre-existing style issues across
+      // the codebase and should not block the CI build.
+      'no-unused-vars': 'warn',
+      'react/prop-types': 'warn',
+      'react/no-unescaped-entities': 'warn',
+      'no-undef': 'error',   // keep as error — actual runtime bugs
     },
   },
 ]

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Pencil, Trash2, Eye, X, Calendar, DollarSign, Tag, CreditCard, FileText, Search, ChevronUp, ChevronDown, Plus, Menu, Loader, IndianRupeeIcon, Camera } from 'lucide-react'
 import Modal from './Modal';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import InactiveAccount from '../AuthRestrict/InactiveAccount';
 import Toast from '../Message/Toast';
@@ -10,6 +11,7 @@ import MobileActionMenu from './MobileActionMenu';
 import ReceiptScanner from './ReceiptScanner';
 
 const ExpenseList = () => {
+  const navigate = useNavigate();
   const [expenses, setExpenses] = useState([]);
   const [addExpenseModal, setAddExpenseModal] = useState(false);
   const [viewExpenseModal, setViewExpenseModal] = useState(false);

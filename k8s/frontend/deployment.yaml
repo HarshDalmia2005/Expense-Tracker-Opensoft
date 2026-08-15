@@ -20,10 +20,14 @@ spec:
       labels:
         app: frontend
     spec:
+      tolerations:
+        - key: "node.kubernetes.io/disk-pressure"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
         - name: frontend
-          image: ghcr.io/harshdalmia2005/spend-sense-frontend:e550b22
-          imagePullPolicy: Always
+          image: docker.io/library/spend-sense-frontend:latest
+          imagePullPolicy: Never
           ports:
             - containerPort: 80
           resources:

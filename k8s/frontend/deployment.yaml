@@ -20,6 +20,10 @@ spec:
       labels:
         app: frontend
     spec:
+      tolerations:
+        - key: "node.kubernetes.io/disk-pressure"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
         - name: frontend
           image: ghcr.io/harshdalmia2005/spend-sense-frontend:04bb963

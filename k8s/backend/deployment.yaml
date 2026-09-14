@@ -26,7 +26,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: backend
-          image: ghcr.io/harshdalmia2005/spend-sense-backend:6f60408
+          image: ghcr.io/harshdalmia2005/spend-sense-backend:ced72e0
           imagePullPolicy: Always
           ports:
             - containerPort: 5000

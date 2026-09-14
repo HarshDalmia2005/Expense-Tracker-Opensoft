@@ -467,19 +467,6 @@ GET /health
 
 Returns server uptime, memory usage, CPU load, and database response time. Used by Kubernetes liveness and readiness probes.
 
----
-
-## Team Members
-
-| Name |
-|------|
-| Shivam Kumar |
-| Madhav Samdani |
-| Harsh Dalmia |
-| Ranveer Raj |
-| Nikhil Patel |
-
----
 
 ## License
 

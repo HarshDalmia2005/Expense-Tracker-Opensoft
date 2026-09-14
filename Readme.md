@@ -471,7 +471,3 @@ Returns server uptime, memory usage, CPU load, and database response time. Used 
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Acknowledgments
-
-Special thanks to the OpenSoft team for their support and guidance.
